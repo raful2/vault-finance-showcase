@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/health", "destination": "/api/health.js" },
+    { "source": "/api/state", "destination": "/api/state.js" },
+    { "source": "/api/supabase/test", "destination": "/api/supabase-test.js" }
+  ]
+}
