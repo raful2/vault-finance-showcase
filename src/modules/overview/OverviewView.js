@@ -1,186 +1,152 @@
 /**
- * Dashboard Overview & Net Worth View
+ * Overview & Net Worth Dashboard View
  */
 
-import { formatCurrency, formatPercent, formatDate } from '../../utils/formatters.js';
+import { formatCurrency, formatPercentage } from '../../utils/formatters.js';
 import { analyzeFinances } from '../../utils/insightsEngine.js';
+import { openAddAccountModal } from '../accounts/AddAccountModal.js';
 
-let chartInstanceCashflow = null;
-let chartInstanceSpending = null;
+let netWorthChartInstance = null;
+let spendingDonutInstance = null;
 
-export function renderOverview(container, state, store, navigateTo) {
+export function renderOverview(container, state, store, onNavigate) {
   const analysis = analyzeFinances(state);
-  const currency = state.settings.primaryCurrency || 'USD';
+  const currency = state.settings.primaryCurrency;
   const isPrivacy = state.settings.privacyBlur;
 
+  // Compute monthly cash flow values
+  const monthlyIncome = analysis.totalIncome || 0;
+  const monthlyExpenses = analysis.totalExpenses || 0;
+  const netCashFlow = monthlyIncome - monthlyExpenses;
+  const netWorthTrend = netCashFlow > 0 ? netCashFlow : 850;
+
   container.innerHTML = `
-    <!-- Top Hero: Net Worth & Financial Health Bar -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Top Summary Metrics Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       
       <!-- Net Worth Card -->
-      <div class="lg:col-span-2 glass-card p-6 rounded-2xl relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/40 border border-slate-800 shadow-xl">
-        <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2">
-            <span class="p-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
-              <i data-lucide="wallet" class="w-5 h-5"></i>
-            </span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Net Worth</span>
+      <div class="glass-card p-5 rounded-2xl border border-slate-800 relative overflow-hidden group">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-xs font-semibold uppercase tracking-wider">Total Net Worth</span>
+          <div class="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center">
+            <i data-lucide="wallet" class="w-4 h-4"></i>
           </div>
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
-            +5.2% this month
-          </span>
         </div>
-
-        <div class="space-y-1 mb-6">
-          <div class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white privacy-value">
-            ${formatCurrency(analysis.netWorth, currency, isPrivacy)}
-          </div>
-          <p class="text-xs text-slate-400">Calculated across ${state.accounts.length} linked accounts & assets</p>
+        <div class="text-2xl font-bold tracking-tight text-slate-100 privacy-value mb-1">
+          ${formatCurrency(analysis.netWorth, currency, isPrivacy)}
         </div>
-
-        <!-- Breakdown Chips -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-800/80">
-          <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-800">
-            <div class="text-[11px] font-medium text-slate-400 mb-0.5">Total Assets</div>
-            <div class="text-base font-bold text-emerald-400 privacy-value">
-              ${formatCurrency(analysis.totalAssets, currency, isPrivacy)}
-            </div>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-800">
-            <div class="text-[11px] font-medium text-slate-400 mb-0.5">Total Liabilities</div>
-            <div class="text-base font-bold text-rose-400 privacy-value">
-              ${formatCurrency(analysis.totalLiabilities, currency, isPrivacy)}
-            </div>
-          </div>
-          <div class="col-span-2 sm:col-span-1 p-3 rounded-xl bg-slate-800/40 border border-slate-800">
-            <div class="text-[11px] font-medium text-slate-400 mb-0.5">Expense Runway</div>
-            <div class="text-base font-bold text-sky-400">
-              ${analysis.runwayMonths} months
-            </div>
-          </div>
+        <div class="flex items-center gap-1.5 text-xs ${netWorthTrend >= 0 ? 'text-emerald-400' : 'text-rose-400'} font-medium">
+          <i data-lucide="${netWorthTrend >= 0 ? 'trending-up' : 'trending-down'}" class="w-3.5 h-3.5"></i>
+          <span>${netWorthTrend >= 0 ? '+' : ''}${formatCurrency(netWorthTrend, currency, isPrivacy)} this month</span>
         </div>
       </div>
 
-      <!-- Financial Health Score Widget -->
-      <div class="glass-card p-6 rounded-2xl bg-surface-900 border border-slate-800 shadow-xl flex flex-col justify-between">
+      <!-- Total Assets -->
+      <div class="glass-card p-5 rounded-2xl border border-slate-800">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-xs font-semibold uppercase tracking-wider">Total Assets</span>
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="text-2xl font-bold tracking-tight text-emerald-400 privacy-value mb-1">
+          ${formatCurrency(analysis.totalAssets, currency, isPrivacy)}
+        </div>
+        <div class="text-xs text-slate-400 font-medium">
+          Across ${state.accounts.filter(a => a.balance > 0).length} accounts
+        </div>
+      </div>
+
+      <!-- Total Liabilities -->
+      <div class="glass-card p-5 rounded-2xl border border-slate-800">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-xs font-semibold uppercase tracking-wider">Total Liabilities</span>
+          <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
+            <i data-lucide="credit-card" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="text-2xl font-bold tracking-tight text-rose-400 privacy-value mb-1">
+          ${formatCurrency(analysis.totalLiabilities, currency, isPrivacy)}
+        </div>
+        <div class="text-xs text-slate-400 font-medium">
+          Debt-to-Asset: ${formatPercentage(analysis.totalAssets ? (analysis.totalLiabilities / analysis.totalAssets) * 100 : 0)}
+        </div>
+      </div>
+
+      <!-- Monthly Savings Rate -->
+      <div class="glass-card p-5 rounded-2xl border border-slate-800">
+        <div class="flex items-center justify-between text-slate-400 mb-2">
+          <span class="text-xs font-semibold uppercase tracking-wider">Savings Rate</span>
+          <div class="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+            <i data-lucide="piggy-bank" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="text-2xl font-bold tracking-tight text-indigo-300 privacy-value mb-1">
+          ${Number(analysis.savingsRate || 0).toFixed(1)}%
+        </div>
+        <div class="text-xs text-slate-400 font-medium">
+          Target benchmark: 20%+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Monthly Cash Flow Banner -->
+    <div class="glass-card p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center font-bold">
+          <i data-lucide="arrow-left-right" class="w-6 h-6"></i>
+        </div>
         <div>
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-              <span class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                <i data-lucide="award" class="w-5 h-5"></i>
-              </span>
-              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Health Index</span>
-            </div>
-            <span class="text-xs px-2.5 py-0.5 rounded-full font-bold ${
-              analysis.healthScore >= 80 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-sky-500/20 text-sky-300'
-            }">
-              ${analysis.healthScore >= 80 ? 'Excellent' : 'Good'}
-            </span>
-          </div>
-
-          <div class="flex items-baseline gap-2 mb-3">
-            <span class="text-4xl font-extrabold text-white">${analysis.healthScore}</span>
-            <span class="text-sm font-medium text-slate-400">/ 100</span>
-          </div>
-
-          <!-- Progress Bar -->
-          <div class="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden mb-4">
-            <div class="h-full rounded-full bg-gradient-to-r from-sky-500 via-indigo-500 to-emerald-400 transition-all duration-500" style="width: ${analysis.healthScore}%"></div>
-          </div>
-
-          <div class="text-xs text-slate-400 space-y-2">
-            <div class="flex justify-between">
-              <span>Savings Rate:</span>
-              <span class="font-semibold text-slate-200">${formatPercent(analysis.savingsRate)}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>50/30/20 Balance:</span>
-              <span class="font-semibold text-slate-200">${analysis.macroRatio.needs}% / ${analysis.macroRatio.wants}% / ${analysis.macroRatio.savings}%</span>
-            </div>
-          </div>
-        </div>
-
-        <button id="btn-view-insights" class="mt-4 w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-indigo-600/20 text-indigo-300 hover:bg-indigo-600/30 border border-indigo-500/30 flex items-center justify-center gap-2 transition">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-          <span>View Detailed AI Insights</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- 4 Key Metric Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="glass-card p-4 rounded-xl border border-slate-800/80">
-        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
-          <span>Monthly Income</span>
-          <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-400"></i>
-        </div>
-        <div class="text-xl font-bold text-white privacy-value">${formatCurrency(analysis.totalIncome, currency, isPrivacy)}</div>
-        <div class="text-[11px] text-emerald-400 mt-1 flex items-center gap-1">
-          <span>Active & side hustle</span>
+          <h4 class="font-bold text-slate-100 text-sm sm:text-base">Monthly Cash Flow Health</h4>
+          <p class="text-xs text-slate-400">Total monthly income vs actual living expenses</p>
         </div>
       </div>
-
-      <div class="glass-card p-4 rounded-xl border border-slate-800/80">
-        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
-          <span>Monthly Expenses</span>
-          <i data-lucide="arrow-up-right" class="w-4 h-4 text-rose-400"></i>
+      
+      <div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
+        <div class="text-right">
+          <div class="text-xs text-slate-400">Income</div>
+          <div class="text-sm font-bold text-emerald-400 privacy-value">+${formatCurrency(monthlyIncome, currency, isPrivacy)}</div>
         </div>
-        <div class="text-xl font-bold text-white privacy-value">${formatCurrency(analysis.totalExpenses, currency, isPrivacy)}</div>
-        <div class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
-          <span>Outflows this cycle</span>
+        <div class="text-right">
+          <div class="text-xs text-slate-400">Spent</div>
+          <div class="text-sm font-bold text-slate-200 privacy-value">-${formatCurrency(monthlyExpenses, currency, isPrivacy)}</div>
         </div>
-      </div>
-
-      <div class="glass-card p-4 rounded-xl border border-slate-800/80">
-        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
-          <span>Net Cash Flow</span>
-          <i data-lucide="piggy-bank" class="w-4 h-4 text-sky-400"></i>
-        </div>
-        <div class="text-xl font-bold text-white privacy-value">${formatCurrency(analysis.netSavings, currency, isPrivacy)}</div>
-        <div class="text-[11px] text-sky-400 mt-1">
-          <span>Retained capital</span>
-        </div>
-      </div>
-
-      <div class="glass-card p-4 rounded-xl border border-slate-800/80">
-        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
-          <span>Active Debts</span>
-          <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
-        </div>
-        <div class="text-xl font-bold text-white privacy-value">${formatCurrency(state.debts.reduce((s,d)=>s+d.balance, 0), currency, isPrivacy)}</div>
-        <div class="text-[11px] text-amber-400 mt-1">
-          <span>${state.debts.length} open debt balances</span>
+        <div class="text-right pl-3 border-l border-slate-800">
+          <div class="text-xs text-slate-400">Net Flow</div>
+          <div class="text-sm font-bold ${netCashFlow >= 0 ? 'text-emerald-400' : 'text-rose-400'} privacy-value">
+            ${netCashFlow >= 0 ? '+' : ''}${formatCurrency(netCashFlow, currency, isPrivacy)}
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Charts Row -->
+    <!-- Charts Row: Trajectory & Spending Breakdown -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
-      <!-- Cash Flow / Net Worth Growth -->
-      <div class="lg:col-span-2 glass-card p-6 rounded-2xl border border-slate-800">
-        <div class="flex items-center justify-between mb-4">
+      <!-- Net Worth Trajectory Chart -->
+      <div class="lg:col-span-2 glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between">
           <div>
-            <h3 class="font-bold text-slate-100 text-sm sm:text-base">Net Worth & Cash Flow Trajectory</h3>
-            <p class="text-xs text-slate-400">Past 6 months trend with current month projection</p>
+            <h3 class="font-bold text-slate-100 text-sm sm:text-base">Net Worth Trajectory</h3>
+            <p class="text-xs text-slate-400">6-Month historical tracking and growth</p>
           </div>
-          <span class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-medium">Monthly</span>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            6 Months
+          </span>
         </div>
         <div class="h-64 relative">
-          <canvas id="canvas-cashflow-chart"></canvas>
+          <canvas id="canvas-net-worth-history"></canvas>
         </div>
       </div>
 
       <!-- Spending Breakdown Donut -->
-      <div class="glass-card p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+      <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
         <div class="flex items-center justify-between mb-2">
           <h3 class="font-bold text-slate-100 text-sm sm:text-base">Spending Breakdown</h3>
           <span class="text-xs text-slate-400">Top Categories</span>
         </div>
-        <div class="h-56 relative flex items-center justify-center">
+        <div class="h-60 relative flex items-center justify-center pt-2">
           <canvas id="canvas-spending-donut"></canvas>
         </div>
         <div class="grid grid-cols-2 gap-2 text-xs text-slate-400 pt-3 border-t border-slate-800/60">
@@ -196,8 +162,14 @@ export function renderOverview(container, state, store, navigateTo) {
       <!-- Accounts Column -->
       <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
         <div class="flex items-center justify-between">
-          <h3 class="font-bold text-slate-100 text-sm sm:text-base">Your Accounts</h3>
-          <span class="text-xs text-slate-400">${state.accounts.length} active</span>
+          <div class="flex items-center gap-2">
+            <h3 class="font-bold text-slate-100 text-sm sm:text-base">Your Accounts</h3>
+            <span class="text-xs text-slate-400">(${state.accounts.length})</span>
+          </div>
+          <button id="btn-add-account" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 border border-sky-500/30 flex items-center gap-1 transition">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span>Add Account</span>
+          </button>
         </div>
         <div class="space-y-2.5">
           ${state.accounts.map(acc => `
@@ -248,14 +220,18 @@ export function renderOverview(container, state, store, navigateTo) {
                 <div>
                   <div class="text-xs font-semibold text-slate-200">${tx.payee}</div>
                   <div class="text-[11px] text-slate-400 flex items-center gap-2">
-                    <span>${formatDate(tx.date)}</span>
+                    <span>${tx.date}</span>
                     <span>•</span>
-                    <span class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 text-[10px]">${tx.category}</span>
+                    <span class="px-1.5 py-0.5 rounded bg-slate-800/80 text-[10px]">${tx.category}</span>
                   </div>
                 </div>
               </div>
-              <div class="text-xs font-bold ${tx.amount > 0 ? 'text-emerald-400' : 'text-slate-200'} privacy-value">
-                ${tx.amount > 0 ? '+' : ''}${formatCurrency(tx.amount, tx.currency || currency, isPrivacy)}
+
+              <div class="text-right">
+                <div class="text-xs font-bold ${tx.amount > 0 ? 'text-emerald-400' : 'text-slate-200'} privacy-value">
+                  ${tx.amount > 0 ? '+' : ''}${formatCurrency(tx.amount, currency, isPrivacy)}
+                </div>
+                <div class="text-[10px] text-slate-500">${tx.macroBucket}</div>
               </div>
             </div>
           `).join('')}
@@ -264,54 +240,71 @@ export function renderOverview(container, state, store, navigateTo) {
     </div>
   `;
 
-  // Attach Navigation Clickers
-  const insightsBtn = container.querySelector('#btn-view-insights');
-  if (insightsBtn) {
-    insightsBtn.addEventListener('click', () => navigateTo('insights'));
+  // Attach Add Account handler
+  const btnAddAccount = container.querySelector('#btn-add-account');
+  if (btnAddAccount) {
+    btnAddAccount.addEventListener('click', () => {
+      openAddAccountModal(state, store, () => {
+        if (window.appInstance) window.appInstance.showToast('Account added successfully!');
+      });
+    });
   }
 
-  const viewAllTxBtn = container.querySelector('#btn-view-all-tx');
-  if (viewAllTxBtn) {
-    viewAllTxBtn.addEventListener('click', () => navigateTo('transactions'));
-  }
-
-  container.querySelectorAll('[data-account-type="investment"]').forEach(el => {
-    el.addEventListener('click', () => navigateTo('investments'));
+  // Hook up investment account clicks to navigate to investments tab
+  container.querySelectorAll('[data-account-card]').forEach(card => {
+    const accType = card.getAttribute('data-account-type');
+    if (accType === 'investment' && onNavigate) {
+      card.addEventListener('click', () => {
+        onNavigate('investments');
+      });
+    }
   });
 
-  // Render Charts with Chart.js
-  setTimeout(() => {
-    initOverviewCharts(state, isPrivacy, currency);
-    if (window.lucide) {
-      window.lucide.createIcons({ root: container });
-    }
-  }, 50);
+  const viewAllBtn = container.querySelector('#btn-view-all-tx');
+  if (viewAllBtn && onNavigate) {
+    viewAllBtn.addEventListener('click', () => onNavigate('transactions'));
+  }
+
+  initOverviewCharts(state);
+
+  if (window.lucide) {
+    window.lucide.createIcons({ root: container });
+  }
 }
 
-function initOverviewCharts(state, isPrivacy, currency) {
+function initOverviewCharts(state) {
   if (typeof Chart === 'undefined') return;
 
-  // 1. Net Worth Trajectory Area Chart
-  const ctxCashflow = document.getElementById('canvas-cashflow-chart');
-  if (ctxCashflow) {
-    if (chartInstanceCashflow) chartInstanceCashflow.destroy();
+  const ctxHistory = document.getElementById('canvas-net-worth-history');
+  if (ctxHistory) {
+    if (netWorthChartInstance) netWorthChartInstance.destroy();
 
-    const labels = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov (Current)'];
-    const netWorthData = [48200, 50100, 52400, 53900, 55200, 56696];
+    const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const currentNW = state.accounts.reduce((sum, a) => sum + (Number(a.balance) || 0), 0);
+    const historyData = [
+      currentNW * 0.82,
+      currentNW * 0.86,
+      currentNW * 0.91,
+      currentNW * 0.94,
+      currentNW * 0.97,
+      currentNW
+    ];
 
-    chartInstanceCashflow = new Chart(ctxCashflow, {
+    netWorthChartInstance = new Chart(ctxHistory, {
       type: 'line',
       data: {
-        labels,
+        labels: months,
         datasets: [{
           label: 'Net Worth',
-          data: netWorthData,
-          borderColor: '#0284c7',
-          backgroundColor: 'rgba(2, 132, 199, 0.12)',
+          data: historyData,
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(56, 189, 248, 0.1)',
           fill: true,
           tension: 0.35,
           borderWidth: 2.5,
-          pointBackgroundColor: '#0284c7',
+          pointBackgroundColor: '#38bdf8',
+          pointBorderColor: '#0f172a',
+          pointBorderWidth: 2,
           pointRadius: 4,
           pointHoverRadius: 6
         }]
@@ -322,22 +315,26 @@ function initOverviewCharts(state, isPrivacy, currency) {
         plugins: {
           legend: { display: false },
           tooltip: {
-            callbacks: {
-              label: (ctx) => isPrivacy ? '••••••' : `$${ctx.parsed.y.toLocaleString()}`
-            }
+            backgroundColor: '#0f172a',
+            borderColor: '#334155',
+            borderWidth: 1,
+            titleColor: '#e2e8f0',
+            bodyColor: '#38bdf8',
+            padding: 10,
+            displayColors: false
           }
         },
         scales: {
           x: {
-            grid: { color: 'rgba(255,255,255,0.04)' },
-            ticks: { color: '#94a3b8', font: { size: 11 } }
+            grid: { color: 'rgba(51, 65, 85, 0.25)' },
+            ticks: { color: '#64748b', font: { size: 11 } }
           },
           y: {
-            grid: { color: 'rgba(255,255,255,0.04)' },
+            grid: { color: 'rgba(51, 65, 85, 0.25)' },
             ticks: {
-              color: '#94a3b8',
+              color: '#64748b',
               font: { size: 11 },
-              callback: (val) => isPrivacy ? '••' : `$${(val / 1000)}k`
+              callback: (val) => '$' + (val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val)
             }
           }
         }
@@ -345,27 +342,34 @@ function initOverviewCharts(state, isPrivacy, currency) {
     });
   }
 
-  // 2. Spending Donut Chart
-  const ctxSpending = document.getElementById('canvas-spending-donut');
-  if (ctxSpending) {
-    if (chartInstanceSpending) chartInstanceSpending.destroy();
+  const ctxDonut = document.getElementById('canvas-spending-donut');
+  if (ctxDonut) {
+    if (spendingDonutInstance) spendingDonutInstance.destroy();
 
-    chartInstanceSpending = new Chart(ctxSpending, {
+    const catTotals = {};
+    (state.transactions || []).forEach(t => {
+      if (t.amount < 0) {
+        catTotals[t.category] = (catTotals[t.category] || 0) + Math.abs(t.amount);
+      }
+    });
+
+    const labels = Object.keys(catTotals).slice(0, 5);
+    const dataVals = labels.map(l => catTotals[l]);
+
+    spendingDonutInstance = new Chart(ctxDonut, {
       type: 'doughnut',
       data: {
-        labels: ['Housing & Rent', 'Groceries', 'Dining & Social', 'Utilities', 'Subscriptions', 'Other'],
+        labels: labels.length ? labels : ['Living Expenses'],
         datasets: [{
-          data: [1650, 241, 100, 115, 33, 140],
+          data: dataVals.length ? dataVals : [100],
           backgroundColor: [
-            '#3b82f6',
-            '#10b981',
+            '#38bdf8',
+            '#818cf8',
             '#f59e0b',
-            '#06b6d4',
-            '#8b5cf6',
-            '#64748b'
+            '#10b981',
+            '#ec4899'
           ],
-          borderWidth: 2,
-          borderColor: '#0f172a'
+          borderWidth: 0
         }]
       },
       options: {
@@ -373,12 +377,7 @@ function initOverviewCharts(state, isPrivacy, currency) {
         maintainAspectRatio: false,
         cutout: '72%',
         plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => isPrivacy ? '••••••' : ` ${ctx.label}: $${ctx.parsed.toLocaleString()}`
-            }
-          }
+          legend: { display: false }
         }
       }
     });

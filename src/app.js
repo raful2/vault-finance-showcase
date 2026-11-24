@@ -1,6 +1,6 @@
 /**
  * VaultFinance Main Application Coordinator
- * Handles modular routing, reactivity, and global modals
+ * Handles modular routing, reactivity, authentication gate, and global modals
  */
 
 import { store } from './store.js';
@@ -14,12 +14,14 @@ import { renderGoals } from './modules/goals/GoalsView.js';
 import { renderDebt } from './modules/debt/DebtView.js';
 import { renderInsights } from './modules/insights/InsightsView.js';
 import { renderSettings } from './modules/settings/SettingsView.js';
+import { renderAuthView } from './modules/auth/AuthView.js';
 import { openAddTransactionModal } from './modules/transactions/AddTransactionModal.js';
 import { openCsvImportModal } from './modules/transactions/CsvImportModal.js';
 
 class App {
   constructor() {
     this.currentTab = 'overview';
+    this.appEl = document.getElementById('app');
     this.mainContentEl = document.getElementById('main-content');
     
     // Subscribe to central store
@@ -42,7 +44,7 @@ class App {
 
   handleStateChange(state) {
     // Sync privacy blur class on body
-    if (state.settings.privacyBlur) {
+    if (state.settings?.privacyBlur) {
       document.body.classList.add('privacy-blurred');
     } else {
       document.body.classList.remove('privacy-blurred');
@@ -76,11 +78,45 @@ class App {
     }, 3000);
   }
 
+  renderAuthWall() {
+    const sidebarEl = document.getElementById('sidebar-container');
+    const headerEl = document.getElementById('header-container');
+    const footerEl = document.querySelector('footer');
+
+    if (sidebarEl) sidebarEl.classList.add('hidden');
+    if (headerEl) headerEl.classList.add('hidden');
+    if (footerEl) footerEl.classList.add('hidden');
+
+    if (this.mainContentEl) {
+      this.mainContentEl.className = 'w-full h-full p-0 m-0 max-w-none';
+      renderAuthView(this.mainContentEl, store);
+    }
+  }
+
   render() {
     const state = store.getState();
 
+    // Check Authentication Gate
+    if (!state.auth?.isAuthenticated) {
+      this.renderAuthWall();
+      return;
+    }
+
+    // Restore Main Layout Visibility
+    const sidebarEl = document.getElementById('sidebar-container');
+    const headerEl = document.getElementById('header-container');
+    const footerEl = document.querySelector('footer');
+
+    if (sidebarEl) sidebarEl.classList.remove('hidden');
+    if (headerEl) headerEl.classList.remove('hidden');
+    if (footerEl) footerEl.classList.remove('hidden');
+
+    if (this.mainContentEl) {
+      this.mainContentEl.className = 'flex-1 p-6 max-w-7xl w-full mx-auto space-y-6';
+    }
+
     // 1. Render Sidebar
-    renderSidebar(this.currentTab, (tabId) => this.navigateTo(tabId), state);
+    renderSidebar(this.currentTab, (tabId) => this.navigateTo(tabId), state, store);
 
     // 2. Titles per tab
     const tabMetadata = {
@@ -91,7 +127,7 @@ class App {
       goals: { title: 'Savings Milestones', subtitle: 'Emergency reserve, vacation funds, and down payment progress' },
       debt: { title: 'Debt Payoff Simulator', subtitle: 'Snowball vs Avalanche comparison with APR interest savings' },
       insights: { title: 'Smart Financial Insights', subtitle: 'Pattern detection, budget variances, and savings opportunities' },
-      settings: { title: 'Settings & Cloud Integration', subtitle: 'Supabase credentials, multi-currency, and backups' }
+      settings: { title: 'Settings & Administration', subtitle: 'User preferences, cloud integration, and developer configuration' }
     };
 
     const currentMeta = tabMetadata[this.currentTab] || tabMetadata.overview;

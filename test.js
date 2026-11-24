@@ -2,6 +2,7 @@ import { calculateDebtPayoff } from './src/utils/debtCalculator.js';
 import { parseCSV, processImportedRows } from './src/utils/csvParser.js';
 import { analyzeFinances } from './src/utils/insightsEngine.js';
 import { analyzePortfolio } from './src/utils/investmentCalculator.js';
+import { hashPassword, getInitials } from './src/utils/authUtils.js';
 import { DEFAULT_STATE } from './src/mockData.js';
 
 // 1. Debt Test
@@ -38,3 +39,17 @@ console.log('Portfolio Analysis Test:', JSON.stringify({
   classesCount: portfolio.classBreakdown.length,
   firstRebalance: portfolio.rebalancingList[0]?.symbol + ' ' + portfolio.rebalancingList[0]?.action
 }));
+
+// 5. Auth Utilities Test
+async function testAuth() {
+  const hash1 = await hashPassword('secret123');
+  const hash2 = await hashPassword('secret123');
+  const hash3 = await hashPassword('different');
+  const initials = getInitials('Rafael Schwartz');
+  console.log('Auth Utilities Test:', JSON.stringify({
+    deterministic: hash1 === hash2,
+    different: hash1 !== hash3,
+    initials
+  }));
+}
+testAuth();

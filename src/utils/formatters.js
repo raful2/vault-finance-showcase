@@ -41,6 +41,8 @@ export function formatPercent(value, decimals = 1) {
   return `${num.toFixed(decimals)}%`;
 }
 
+export const formatPercentage = formatPercent;
+
 /**
  * Format standard ISO date YYYY-MM-DD into human-friendly string
  */

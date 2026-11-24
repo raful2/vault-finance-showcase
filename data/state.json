@@ -3,7 +3,7 @@
     "primaryCurrency": "USD",
     "theme": "dark",
     "privacyBlur": false,
-    "activeBudgetView": "bills",
+    "activeBudgetView": "hybrid",
     "pinLockEnabled": false,
     "pinHash": "",
     "supabaseUrl": "",
@@ -479,5 +479,23 @@
       "targetAllocationPct": 10,
       "accountId": "acc-4"
     }
-  ]
+  ],
+  "auth": {
+    "isAuthenticated": true,
+    "isDemo": true,
+    "currentUser": {
+      "id": "demo-user",
+      "name": "Demo Explorer",
+      "email": "demo@vaultfinance.app",
+      "role": "admin",
+      "avatarColor": "#3b82f6"
+    },
+    "users": []
+  },
+  "devSettings": {
+    "supabaseUrl": "",
+    "supabaseKey": "",
+    "marketApiKey": "",
+    "debugMode": false
+  }
 }
