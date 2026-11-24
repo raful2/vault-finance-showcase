@@ -30,6 +30,7 @@ Built following a deep collaborative architecture review, the project enforces s
 | M8 | Privacy & Security Suite | Complete | One-click Privacy Mask blurring all dollar amounts for public screen protection, plus JSON database backup/restore. |
 | M9 | Supabase Cloud Ready | Complete | Complete PostgreSQL schema migration script (`supabase-schema.sql`) with Row-Level Security and connection tester. |
 | M10 | Investment & Asset Portfolio Deep-Dive | Complete | Multi-asset holdings (stocks, ETFs, crypto, bonds) with live quotes, actual vs target rebalancing calculator, and 12-month dividend forecaster. |
+| M11 | Auth, Multi-User & Split Settings | Complete | Full-screen AuthView (login/sign-up/demo), multi-user profile storage with per-user data isolation, split User vs. Developer Settings, and instant "+ Add Account" modal. |
 
 ---
 
