@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VaultFinance — All-in-One Personal Finance Hub</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6'/></svg>">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              900: '#0c4a6e',
+            },
+            surface: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              800: '#1e293b',
+              850: '#172033',
+              900: '#0f172a',
+              950: '#090d16'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Privacy Blur Mode */
+    .privacy-blurred .privacy-value {
+      filter: blur(8px);
+      user-select: none;
+      transition: filter 0.2s ease-in-out;
+    }
+    .privacy-blurred .privacy-value:hover {
+      filter: blur(4px);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(71, 85, 105, 0.5);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.8);
+    }
+
+    /* Glassmorphism Accents */
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .light .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-surface-950 text-slate-100 font-sans antialiased min-h-screen selection:bg-brand-500 selection:text-white">
+  
+  <div id="app" class="flex min-h-screen">
+    <!-- Sidebar dynamically injected here -->
+    <aside id="sidebar-container" class="w-64 flex-shrink-0 hidden md:block border-r border-slate-800 bg-surface-900/90 flex flex-col z-20"></aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <header id="header-container" class="sticky top-0 z-10 border-b border-slate-800 bg-surface-900/80 backdrop-blur px-6 py-4 flex items-center justify-between"></header>
+
+      <main id="main-content" class="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6"></main>
+
+      <footer class="border-t border-slate-800/60 px-6 py-4 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div>VaultFinance Hub • Private, Cloud-Ready Personal Finance Architecture</div>
+        <div class="flex items-center gap-4">
+          <span id="footer-status-indicator" class="flex items-center gap-1.5 text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Local Engine Active
+          </span>
+          <span class="text-slate-600">|</span>
+          <span>Version 1.0.0</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Global Modal Host Container -->
+  <div id="modal-container" class="relative z-50"></div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- App Entry Script -->
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

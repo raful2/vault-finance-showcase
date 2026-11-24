@@ -1,0 +1,414 @@
+{
+  "settings": {
+    "primaryCurrency": "USD",
+    "theme": "dark",
+    "privacyBlur": false,
+    "activeBudgetView": "bills",
+    "pinLockEnabled": false,
+    "pinHash": "",
+    "supabaseUrl": "",
+    "supabaseKey": "",
+    "isCloudSynced": false,
+    "exchangeRates": {
+      "USD": 1,
+      "EUR": 0.92,
+      "GBP": 0.79,
+      "CAD": 1.36,
+      "AUD": 1.52,
+      "JPY": 154.5,
+      "CHF": 0.89
+    }
+  },
+  "accounts": [
+    {
+      "id": "acc-1",
+      "name": "Main Checking",
+      "institution": "Chase Bank",
+      "type": "checking",
+      "balance": 4250.8,
+      "currency": "USD",
+      "mask": "4921",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "acc-2",
+      "name": "High Yield Savings (4.75%)",
+      "institution": "Marcus by Goldman Sachs",
+      "type": "savings",
+      "balance": 18450,
+      "currency": "USD",
+      "mask": "8832",
+      "color": "#10b981"
+    },
+    {
+      "id": "acc-3",
+      "name": "Sapphire Preferred Card",
+      "institution": "Chase Bank",
+      "type": "credit",
+      "balance": -1124.5,
+      "currency": "USD",
+      "mask": "1094",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "acc-4",
+      "name": "Total Market Index Fund",
+      "institution": "Vanguard",
+      "type": "investment",
+      "balance": 34800,
+      "currency": "USD",
+      "mask": "6740",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "acc-5",
+      "name": "Physical Cash & Vault",
+      "institution": "Cash Wallet",
+      "type": "cash",
+      "balance": 320,
+      "currency": "USD",
+      "mask": "CASH",
+      "color": "#06b6d4"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx-1",
+      "date": "2026-11-23",
+      "payee": "TechCorp Salary Direct Deposit",
+      "category": "Income",
+      "macroBucket": "income",
+      "amount": 3450,
+      "accountId": "acc-1",
+      "currency": "USD",
+      "isRecurring": true,
+      "notes": "Bi-weekly paycheck"
+    },
+    {
+      "id": "tx-2",
+      "date": "2026-11-22",
+      "payee": "Whole Foods Market",
+      "category": "Groceries",
+      "macroBucket": "needs",
+      "amount": -142.8,
+      "accountId": "acc-3",
+      "currency": "USD",
+      "isRecurring": false,
+      "notes": "Weekly fresh produce & essentials"
+    },
+    {
+      "id": "tx-3",
+      "date": "2026-11-21",
+      "payee": "The Olive Bistro",
+      "category": "Dining & Restaurants",
+      "macroBucket": "wants",
+      "amount": -86.5,
+      "accountId": "acc-3",
+      "currency": "USD",
+      "isRecurring": false,
+      "notes": "Dinner with friends"
+    },
+    {
+      "id": "tx-4",
+      "date": "2026-11-20",
+      "payee": "Metropolis Electric & Gas",
+      "category": "Utilities",
+      "macroBucket": "needs",
+      "amount": -115.4,
+      "accountId": "acc-1",
+      "currency": "USD",
+      "isRecurring": true,
+      "notes": "November energy statement"
+    },
+    {
+      "id": "tx-5",
+      "date": "2026-11-19",
+      "payee": "Netflix & Spotify Bundle",
+      "category": "Subscriptions",
+      "macroBucket": "wants",
+      "amount": -32.98,
+      "accountId": "acc-3",
+      "currency": "USD",
+      "isRecurring": true,
+      "notes": "Monthly digital services"
+    },
+    {
+      "id": "tx-6",
+      "date": "2026-11-18",
+      "payee": "Shell Fuel Station",
+      "category": "Transportation",
+      "macroBucket": "needs",
+      "amount": -54.2,
+      "accountId": "acc-3",
+      "currency": "USD",
+      "isRecurring": false,
+      "notes": "Gas fill-up"
+    },
+    {
+      "id": "tx-7",
+      "date": "2026-11-17",
+      "payee": "Vanguard Auto-Invest Transfer",
+      "category": "Investment",
+      "macroBucket": "savings",
+      "amount": -500,
+      "accountId": "acc-1",
+      "currency": "USD",
+      "isRecurring": true,
+      "notes": "VTI recurring allocation"
+    },
+    {
+      "id": "tx-8",
+      "date": "2026-11-15",
+      "payee": "Highland Park Apartments",
+      "category": "Rent & Housing",
+      "macroBucket": "needs",
+      "amount": -1650,
+      "accountId": "acc-1",
+      "currency": "USD",
+      "isRecurring": true,
+      "notes": "Monthly rent"
+    },
+    {
+      "id": "tx-9",
+      "date": "2026-11-14",
+      "payee": "Blue Bottle Coffee",
+      "category": "Coffee & Snacks",
+      "macroBucket": "wants",
+      "amount": -14.25,
+      "accountId": "acc-3",
+      "currency": "USD",
+      "isRecurring": false,
+      "notes": "Cold brew and pastry"
+    },
+    {
+      "id": "tx-10",
+      "date": "2026-11-12",
+      "payee": "Trader Joe's",
+      "category": "Groceries",
+      "macroBucket": "needs",
+      "amount": -98.3,
+      "accountId": "acc-3",
+      "currency": "USD",
+      "isRecurring": false,
+      "notes": "Pantry restocking"
+    },
+    {
+      "id": "tx-11",
+      "date": "2026-11-10",
+      "payee": "Freelance UI Design Client",
+      "category": "Side Hustle",
+      "macroBucket": "income",
+      "amount": 850,
+      "accountId": "acc-1",
+      "currency": "USD",
+      "isRecurring": false,
+      "notes": "Website redesign milestone"
+    },
+    {
+      "id": "tx-12",
+      "date": "2026-11-08",
+      "payee": "Amazon.com Essentials",
+      "category": "Shopping",
+      "macroBucket": "wants",
+      "amount": -64.75,
+      "accountId": "acc-3",
+      "currency": "USD",
+      "isRecurring": false,
+      "notes": "Desk lamp & cable organizer"
+    },
+    {
+      "id": "tx-13",
+      "date": "2026-11-05",
+      "payee": "Planet Fitness Gym Membership",
+      "category": "Health & Fitness",
+      "macroBucket": "needs",
+      "amount": -24.99,
+      "accountId": "acc-3",
+      "currency": "USD",
+      "isRecurring": true,
+      "notes": "Monthly gym fee"
+    },
+    {
+      "id": "tx-14",
+      "date": "2026-11-02",
+      "payee": "CVS Pharmacy",
+      "category": "Healthcare",
+      "macroBucket": "needs",
+      "amount": -35.6,
+      "accountId": "acc-3",
+      "currency": "USD",
+      "isRecurring": false,
+      "notes": "Prescription & vitamins"
+    }
+  ],
+  "budgets": [
+    {
+      "id": "b-1",
+      "category": "Rent & Housing",
+      "macroBucket": "needs",
+      "monthlyLimit": 1650,
+      "period": "monthly"
+    },
+    {
+      "id": "b-2",
+      "category": "Groceries",
+      "macroBucket": "needs",
+      "monthlyLimit": 550,
+      "period": "monthly"
+    },
+    {
+      "id": "b-3",
+      "category": "Utilities",
+      "macroBucket": "needs",
+      "monthlyLimit": 180,
+      "period": "monthly"
+    },
+    {
+      "id": "b-4",
+      "category": "Transportation",
+      "macroBucket": "needs",
+      "monthlyLimit": 200,
+      "period": "monthly"
+    },
+    {
+      "id": "b-5",
+      "category": "Healthcare",
+      "macroBucket": "needs",
+      "monthlyLimit": 150,
+      "period": "monthly"
+    },
+    {
+      "id": "b-6",
+      "category": "Dining & Restaurants",
+      "macroBucket": "wants",
+      "monthlyLimit": 300,
+      "period": "monthly"
+    },
+    {
+      "id": "b-7",
+      "category": "Shopping",
+      "macroBucket": "wants",
+      "monthlyLimit": 250,
+      "period": "monthly"
+    },
+    {
+      "id": "b-8",
+      "category": "Subscriptions",
+      "macroBucket": "wants",
+      "monthlyLimit": 60,
+      "period": "monthly"
+    },
+    {
+      "id": "b-9",
+      "category": "Coffee & Snacks",
+      "macroBucket": "wants",
+      "monthlyLimit": 80,
+      "period": "monthly"
+    },
+    {
+      "id": "b-10",
+      "category": "Investment & Emergency",
+      "macroBucket": "savings",
+      "monthlyLimit": 1000,
+      "period": "monthly"
+    }
+  ],
+  "goals": [
+    {
+      "id": "g-1",
+      "title": "6-Month Emergency Safety Net",
+      "category": "Safety",
+      "targetAmount": 20000,
+      "currentAmount": 18450,
+      "targetDate": "2027-04-01",
+      "color": "#10b981",
+      "icon": "shield-check",
+      "notes": "Stored in Marcus 4.75% HYSA"
+    },
+    {
+      "id": "g-2",
+      "title": "Vacation to Japan (Kyoto & Tokyo)",
+      "category": "Travel",
+      "targetAmount": 4500,
+      "currentAmount": 2800,
+      "targetDate": "2027-09-15",
+      "color": "#3b82f6",
+      "icon": "plane",
+      "notes": "Flights, Ryokan stays, food budget"
+    },
+    {
+      "id": "g-3",
+      "title": "Home Down Payment Fund",
+      "category": "Real Estate",
+      "targetAmount": 50000,
+      "currentAmount": 14200,
+      "targetDate": "2029-01-01",
+      "color": "#8b5cf6",
+      "icon": "home",
+      "notes": "Targeting 20% down on starter home"
+    }
+  ],
+  "debts": [
+    {
+      "id": "d-1",
+      "name": "Credit Card (High APR)",
+      "type": "credit_card",
+      "balance": 1124.5,
+      "interestRate": 22.49,
+      "minimumPayment": 65,
+      "dueDay": 18
+    },
+    {
+      "id": "d-2",
+      "name": "Federal Student Loan Direct Sub",
+      "type": "student_loan",
+      "balance": 8400,
+      "interestRate": 4.8,
+      "minimumPayment": 140,
+      "dueDay": 5
+    },
+    {
+      "id": "d-3",
+      "name": "Reliable Sedan Auto Loan",
+      "type": "auto_loan",
+      "balance": 11200,
+      "interestRate": 6.15,
+      "minimumPayment": 265,
+      "dueDay": 12
+    }
+  ],
+  "recurringBills": [
+    {
+      "id": "rb-1",
+      "name": "Highland Park Rent",
+      "amount": 1650,
+      "frequency": "monthly",
+      "dueDate": "1st",
+      "category": "Rent & Housing"
+    },
+    {
+      "id": "rb-2",
+      "name": "Metropolis Electric",
+      "amount": 115.4,
+      "frequency": "monthly",
+      "dueDate": "20th",
+      "category": "Utilities"
+    },
+    {
+      "id": "rb-3",
+      "name": "Netflix & Spotify",
+      "amount": 32.98,
+      "frequency": "monthly",
+      "dueDate": "19th",
+      "category": "Subscriptions"
+    },
+    {
+      "id": "rb-4",
+      "name": "Planet Fitness Gym",
+      "amount": 24.99,
+      "frequency": "monthly",
+      "dueDate": "5th",
+      "category": "Health & Fitness"
+    }
+  ]
+}

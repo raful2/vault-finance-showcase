@@ -1,0 +1,13 @@
+{
+  "name": "finance-hub",
+  "version": "1.0.0",
+  "description": "All-in-One Personal Finance Hub with Multi-Currency, Modular Budgeting, Debt Simulator, and Supabase Cloud Sync",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["finance", "budgeting", "net-worth", "debt-snowball", "supabase"],
+  "author": "Antigravity",
+  "license": "MIT"
+}
