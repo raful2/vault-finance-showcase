@@ -29,6 +29,7 @@ Built following a deep collaborative architecture review, the project enforces s
 | M7 | AI & Algorithmic Spending Advisor | Complete | Automated health index scoring (80/100), liquid expense runway calculations (8.2 months), and budget leak warnings. |
 | M8 | Privacy & Security Suite | Complete | One-click Privacy Mask blurring all dollar amounts for public screen protection, plus JSON database backup/restore. |
 | M9 | Supabase Cloud Ready | Complete | Complete PostgreSQL schema migration script (`supabase-schema.sql`) with Row-Level Security and connection tester. |
+| M10 | Investment & Asset Portfolio Deep-Dive | Complete | Multi-asset holdings (stocks, ETFs, crypto, bonds) with live quotes, actual vs target rebalancing calculator, and 12-month dividend forecaster. |
 
 ---
 
@@ -71,6 +72,12 @@ The user can toggle seamlessly between four industry methodologies:
 - **1-Click Public Mask**: An eye toggle in the top navigation bar applies CSS blur filters to all currency values across cards, tables, and chart tooltips.
 - **Data Portability**: Full JSON database snapshot export and restore functionality, plus standard CSV transaction exports.
 
+### 3.6 Investment & Asset Portfolio Deep-Dive
+- **Holdings & Live Market Pricing**: Real-time quotes for Equities, ETFs, and Crypto with cost basis, total value, and unrealized return ($ and %).
+- **Asset Allocation & Rebalancing Tool**: Visual Donut comparison of Actual vs. Target allocation, with automated buy and trim rebalancing order generation.
+- **Dividend Forecaster & Passive Cash Flow**: Annual projected dividend totals, portfolio yield percentage, and a 12-month calendar payout bar chart.
+- **Brokerage CSV Importer**: Dedicated bulk holding importer supporting Vanguard, Fidelity, Schwab, and Robinhood portfolio exports.
+
 ---
 
 ## 4. Technical Architecture & Directory Structure
@@ -92,7 +99,11 @@ finance-hub/
     │   ├── formatters.js         # Currency and privacy masking helpers
     │   ├── csvParser.js          # Bank statement CSV parser & auto-categorizer
     │   ├── debtCalculator.js     # Amortization simulation engine
+    │   ├── investmentCalculator.js # Portfolio analytics & rebalancing math engine
     │   └── insightsEngine.js     # Health score & spending pattern analyzer
+    ├── services/
+    │   ├── marketDataService.js  # Live quotes & crypto pricing engine
+    │   └── supabaseService.js    # Cloud sync & PostgreSQL client
     ├── components/
     │   ├── Sidebar.js            # Navigation bar with active count badges
     │   └── Header.js             # Privacy toggle, currency switcher, and action buttons
@@ -100,6 +111,7 @@ finance-hub/
         ├── overview/             # Net Worth cards, metric tiles, and trajectory charts
         ├── transactions/         # Searchable ledger, category filters, CSV importer modal
         ├── budgets/              # Budgeting views: Category, 50/30/20, Envelopes, Bills
+        ├── investments/          # Portfolio holdings, rebalance calculator, dividend forecaster
         ├── goals/                # Savings goals with interactive deposit transfers
         ├── debt/                 # Debt payoff simulator and amortization chart
         ├── insights/             # AI spending advice and runway analysis

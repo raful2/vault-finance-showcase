@@ -23,7 +23,8 @@ class Store {
         return {
           ...DEFAULT_STATE,
           ...parsed,
-          settings: { ...DEFAULT_STATE.settings, ...parsed.settings }
+          settings: { ...DEFAULT_STATE.settings, ...parsed.settings },
+          investments: parsed.investments || DEFAULT_STATE.investments || []
         };
       }
     } catch (e) {
@@ -257,6 +258,87 @@ class Store {
   deleteDebt(id) {
     this.state.debts = this.state.debts.filter(d => d.id !== id);
     this.notify();
+  }
+
+  // INVESTMENTS
+  syncInvestmentAccountBalance() {
+    if (!this.state.investments || !this.state.accounts) return;
+    const totalInvested = this.state.investments.reduce((sum, h) => {
+      const shares = Number(h.shares) || 0;
+      const price = Number(h.currentPrice) || Number(h.costBasis) || 0;
+      return sum + (shares * price);
+    }, 0);
+
+    const investmentAcc = this.state.accounts.find(a => a.type === 'investment' || a.id === 'acc-4');
+    if (investmentAcc) {
+      investmentAcc.balance = Number(totalInvested.toFixed(2));
+    }
+  }
+
+  addHolding(holding) {
+    if (!this.state.investments) this.state.investments = [];
+    const newHolding = {
+      ...holding,
+      id: holding.id || `inv-${Date.now()}`,
+      shares: Number(holding.shares) || 0,
+      costBasis: Number(holding.costBasis) || 0,
+      currentPrice: Number(holding.currentPrice) || Number(holding.costBasis) || 0,
+      dividendYield: Number(holding.dividendYield) || 0,
+      targetAllocationPct: Number(holding.targetAllocationPct) || 0
+    };
+    this.state.investments.push(newHolding);
+    this.syncInvestmentAccountBalance();
+    this.notify();
+  }
+
+  editHolding(id, updates) {
+    if (!this.state.investments) return;
+    const idx = this.state.investments.findIndex(h => h.id === id);
+    if (idx !== -1) {
+      this.state.investments[idx] = { ...this.state.investments[idx], ...updates };
+      this.syncInvestmentAccountBalance();
+      this.notify();
+    }
+  }
+
+  deleteHolding(id) {
+    if (!this.state.investments) return;
+    this.state.investments = this.state.investments.filter(h => h.id !== id);
+    this.syncInvestmentAccountBalance();
+    this.notify();
+  }
+
+  importHoldings(newHoldings) {
+    if (!this.state.investments) this.state.investments = [];
+    newHoldings.forEach(h => {
+      const existingIdx = this.state.investments.findIndex(item => item.symbol.toUpperCase() === h.symbol.toUpperCase());
+      if (existingIdx !== -1) {
+        this.state.investments[existingIdx] = { ...this.state.investments[existingIdx], ...h };
+      } else {
+        this.state.investments.push({
+          ...h,
+          id: h.id || `inv-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`
+        });
+      }
+    });
+    this.syncInvestmentAccountBalance();
+    this.notify();
+  }
+
+  updateHoldingPrices(priceMap = {}) {
+    if (!this.state.investments) return;
+    let changed = false;
+    this.state.investments.forEach(h => {
+      const sym = h.symbol.toUpperCase();
+      if (priceMap[sym] && priceMap[sym] !== h.currentPrice) {
+        h.currentPrice = Number(priceMap[sym]);
+        changed = true;
+      }
+    });
+    if (changed) {
+      this.syncInvestmentAccountBalance();
+      this.notify();
+    }
   }
 
   // SETTINGS

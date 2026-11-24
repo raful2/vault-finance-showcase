@@ -9,6 +9,7 @@ import { renderHeader } from './components/Header.js';
 import { renderOverview } from './modules/overview/OverviewView.js';
 import { renderTransactions } from './modules/transactions/TransactionsView.js';
 import { renderBudgets } from './modules/budgets/BudgetsView.js';
+import { renderInvestments } from './modules/investments/InvestmentsView.js';
 import { renderGoals } from './modules/goals/GoalsView.js';
 import { renderDebt } from './modules/debt/DebtView.js';
 import { renderInsights } from './modules/insights/InsightsView.js';
@@ -86,6 +87,7 @@ class App {
       overview: { title: 'Financial Overview', subtitle: 'Net worth, asset allocation, and cash flow trajectory' },
       transactions: { title: 'Transaction Ledger', subtitle: 'Search, filter, categorize, and bank statement uploads' },
       budgets: { title: 'Budgeting & Allocations', subtitle: 'Category limits, 50/30/20 rule, and envelope balances' },
+      investments: { title: 'Investments & Portfolio', subtitle: 'Live ticker pricing, asset allocation rebalancing, and dividend forecasting' },
       goals: { title: 'Savings Milestones', subtitle: 'Emergency reserve, vacation funds, and down payment progress' },
       debt: { title: 'Debt Payoff Simulator', subtitle: 'Snowball vs Avalanche comparison with APR interest savings' },
       insights: { title: 'Smart Financial Insights', subtitle: 'Pattern detection, budget variances, and savings opportunities' },
@@ -139,6 +141,9 @@ class App {
         break;
       case 'budgets':
         renderBudgets(this.mainContentEl, state, store);
+        break;
+      case 'investments':
+        renderInvestments(this.mainContentEl, state, store);
         break;
       case 'goals':
         renderGoals(this.mainContentEl, state, store);

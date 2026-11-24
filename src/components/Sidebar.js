@@ -6,6 +6,7 @@ export const NAV_ITEMS = [
   { id: 'overview', label: 'Overview', icon: 'layout-dashboard', badge: null },
   { id: 'transactions', label: 'Transactions', icon: 'receipt', badge: null },
   { id: 'budgets', label: 'Budgets & Cash Flow', icon: 'pie-chart', badge: null },
+  { id: 'investments', label: 'Investments & Assets', icon: 'trending-up', badge: 'Live' },
   { id: 'goals', label: 'Savings Goals', icon: 'target', badge: null },
   { id: 'debt', label: 'Debt Simulator', icon: 'zap', badge: 'Payoff' },
   { id: 'insights', label: 'Smart Insights', icon: 'sparkles', badge: 'AI' },

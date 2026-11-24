@@ -90,6 +90,23 @@ CREATE TABLE IF NOT EXISTS public.debts (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- 7. INVESTMENTS & ASSET HOLDINGS
+CREATE TABLE IF NOT EXISTS public.investments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  account_id UUID REFERENCES public.accounts(id) ON DELETE SET NULL,
+  symbol TEXT NOT NULL,
+  name TEXT NOT NULL,
+  asset_class TEXT DEFAULT 'stock' CHECK (asset_class IN ('stock', 'etf', 'crypto', 'bond', 'real_estate', 'other')),
+  shares NUMERIC(18, 6) NOT NULL DEFAULT 0,
+  cost_basis NUMERIC(14, 2) NOT NULL DEFAULT 0.00,
+  current_price NUMERIC(14, 2) NOT NULL DEFAULT 0.00,
+  dividend_yield NUMERIC(6, 3) DEFAULT 0.000,
+  dividend_frequency TEXT DEFAULT 'quarterly',
+  target_allocation_pct NUMERIC(5, 2) DEFAULT 0.00,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 -- ROW LEVEL SECURITY (RLS) POLICIES
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.accounts ENABLE ROW LEVEL SECURITY;
@@ -97,6 +114,7 @@ ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.budgets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.goals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.debts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.investments ENABLE ROW LEVEL SECURITY;
 
 -- Standard User Isolation Policies
 CREATE POLICY "Users can manage their own profile" ON public.profiles
@@ -115,6 +133,9 @@ CREATE POLICY "Users can manage their own goals" ON public.goals
   FOR ALL USING (auth.uid() = user_id);
 
 CREATE POLICY "Users can manage their own debts" ON public.debts
+  FOR ALL USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can manage their own investments" ON public.investments
   FOR ALL USING (auth.uid() = user_id);
 
 -- Profile creation trigger on new user signup

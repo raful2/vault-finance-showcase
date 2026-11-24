@@ -123,6 +123,32 @@ export function renderSettings(container, state, store) {
           </div>
         </div>
 
+        <!-- Market Data & Live Pricing -->
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center font-bold">
+              <i data-lucide="trending-up" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-100 text-sm">Market Data & Portfolio Pricing</h4>
+              <p class="text-xs text-slate-400">Live quotes use CoinGecko & free market endpoints by default. Add custom API keys for higher frequency.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Finnhub / AlphaVantage API Key (Optional)</label>
+              <div class="flex gap-2">
+                <input type="password" id="input-market-api-key" placeholder="Enter key (leave blank for free built-in quotes)" value="${settings.marketApiKey || ''}"
+                  class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono">
+                <button id="btn-save-market-key" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-200 hover:text-white hover:bg-slate-700 transition">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- 4. Data Management, Export & Reset -->
         <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
           <div class="flex items-center gap-3">
@@ -201,6 +227,15 @@ export function renderSettings(container, state, store) {
           };
           reader.readAsText(file);
         }
+      });
+    }
+
+    const saveMarketBtn = container.querySelector('#btn-save-market-key');
+    if (saveMarketBtn) {
+      saveMarketBtn.addEventListener('click', () => {
+        const key = container.querySelector('#input-market-api-key').value.trim();
+        store.updateSettings({ marketApiKey: key });
+        alert('Market Data API Key saved!');
       });
     }
 

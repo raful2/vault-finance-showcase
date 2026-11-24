@@ -201,13 +201,16 @@ export function renderOverview(container, state, store, navigateTo) {
         </div>
         <div class="space-y-2.5">
           ${state.accounts.map(acc => `
-            <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700/60 flex items-center justify-between hover:bg-slate-800 transition">
+            <div data-account-card="${acc.id}" data-account-type="${acc.type}" class="p-3 rounded-xl bg-slate-800/50 border border-slate-700/60 flex items-center justify-between hover:bg-slate-800 transition ${acc.type === 'investment' ? 'cursor-pointer hover:border-sky-500/50 group' : ''}">
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-white text-xs" style="background-color: ${acc.color || '#3b82f6'}20; color: ${acc.color || '#3b82f6'}; border: 1px solid ${acc.color || '#3b82f6'}40">
                   <i data-lucide="${acc.type === 'credit' ? 'credit-card' : acc.type === 'investment' ? 'trending-up' : acc.type === 'savings' ? 'piggy-bank' : 'landmark'}" class="w-4 h-4"></i>
                 </div>
                 <div>
-                  <div class="text-xs font-semibold text-slate-200">${acc.name}</div>
+                  <div class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                    <span>${acc.name}</span>
+                    ${acc.type === 'investment' ? `<span class="text-[10px] text-sky-400 group-hover:underline">Deep-Dive →</span>` : ''}
+                  </div>
                   <div class="text-[11px] text-slate-400">${acc.institution} •••• ${acc.mask}</div>
                 </div>
               </div>
@@ -271,6 +274,10 @@ export function renderOverview(container, state, store, navigateTo) {
   if (viewAllTxBtn) {
     viewAllTxBtn.addEventListener('click', () => navigateTo('transactions'));
   }
+
+  container.querySelectorAll('[data-account-type="investment"]').forEach(el => {
+    el.addEventListener('click', () => navigateTo('investments'));
+  });
 
   // Render Charts with Chart.js
   setTimeout(() => {

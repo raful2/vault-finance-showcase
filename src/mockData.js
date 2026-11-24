@@ -14,6 +14,8 @@ export const DEFAULT_STATE = {
     supabaseUrl: '',
     supabaseKey: '',
     isCloudSynced: false,
+    marketApiKey: '',
+    autoRefreshPrices: true,
     exchangeRates: {
       USD: 1.0,
       EUR: 0.92,
@@ -327,5 +329,72 @@ export const DEFAULT_STATE = {
     { id: 'rb-2', name: 'Metropolis Electric', amount: 115.40, frequency: 'monthly', dueDate: '20th', category: 'Utilities' },
     { id: 'rb-3', name: 'Netflix & Spotify', amount: 32.98, frequency: 'monthly', dueDate: '19th', category: 'Subscriptions' },
     { id: 'rb-4', name: 'Planet Fitness Gym', amount: 24.99, frequency: 'monthly', dueDate: '5th', category: 'Health & Fitness' }
+  ],
+  investments: [
+    {
+      id: 'inv-1',
+      symbol: 'VOO',
+      name: 'Vanguard S&P 500 ETF',
+      assetClass: 'etf',
+      shares: 32.0,
+      costBasis: 420.50,
+      currentPrice: 546.20,
+      dividendYield: 1.45,
+      dividendFrequency: 'quarterly',
+      targetAllocationPct: 50,
+      accountId: 'acc-4'
+    },
+    {
+      id: 'inv-2',
+      symbol: 'AAPL',
+      name: 'Apple Inc.',
+      assetClass: 'stock',
+      shares: 25.0,
+      costBasis: 180.20,
+      currentPrice: 229.10,
+      dividendYield: 0.52,
+      dividendFrequency: 'quarterly',
+      targetAllocationPct: 15,
+      accountId: 'acc-4'
+    },
+    {
+      id: 'inv-3',
+      symbol: 'SCHD',
+      name: 'Schwab US Dividend Equity ETF',
+      assetClass: 'etf',
+      shares: 55.0,
+      costBasis: 72.80,
+      currentPrice: 84.40,
+      dividendYield: 3.42,
+      dividendFrequency: 'quarterly',
+      targetAllocationPct: 15,
+      accountId: 'acc-4'
+    },
+    {
+      id: 'inv-4',
+      symbol: 'BTC',
+      name: 'Bitcoin',
+      assetClass: 'crypto',
+      shares: 0.055,
+      costBasis: 52000.00,
+      currentPrice: 88450.00,
+      dividendYield: 0,
+      dividendFrequency: 'none',
+      targetAllocationPct: 10,
+      accountId: 'acc-4'
+    },
+    {
+      id: 'inv-5',
+      symbol: 'BND',
+      name: 'Vanguard Total Bond Market ETF',
+      assetClass: 'bond',
+      shares: 28.0,
+      costBasis: 71.50,
+      currentPrice: 73.15,
+      dividendYield: 4.10,
+      dividendFrequency: 'monthly',
+      targetAllocationPct: 10,
+      accountId: 'acc-4'
+    }
   ]
 };
